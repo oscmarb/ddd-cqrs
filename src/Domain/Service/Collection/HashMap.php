@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Oscmarb\Ddd\Domain\Service\Collection;
 
-use Oscmarb\Ddd\Domain\Service\Utils\HashService;
+use Oscmarb\Hasher\Hasher;
 
 final class HashMap
 {
@@ -81,6 +81,6 @@ final class HashMap
 
     public static function hashKey(mixed $key): string
     {
-        return HashService::newInstance()->calculateHash($key);
+        return Hasher::md5Hash($key);
     }
 }

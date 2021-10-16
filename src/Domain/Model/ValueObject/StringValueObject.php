@@ -15,6 +15,11 @@ class StringValueObject extends ValueObject
         return $this->value;
     }
 
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
     public function toPrimitives(): string
     {
         return $this->value;

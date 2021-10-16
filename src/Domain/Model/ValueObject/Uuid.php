@@ -17,6 +17,11 @@ class Uuid extends ValueObject
         return $this->value;
     }
 
+    public function __toString(): string
+    {
+        return $this->value;
+    }
+
     public static function uuid(): static
     {
         return new static(self::rawUuid());

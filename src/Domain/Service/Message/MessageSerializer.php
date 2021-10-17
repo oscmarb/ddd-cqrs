@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Oscmarb\Ddd\Domain\Service\Message;
 
+use Oscmarb\Ddd\Domain\Command\Command;
 use Oscmarb\Ddd\Domain\Command\CommandRegistry;
+use Oscmarb\Ddd\Domain\DomainEvent\DomainEvent;
 use Oscmarb\Ddd\Domain\DomainEvent\DomainEventRegistry;
 use Oscmarb\Ddd\Domain\Message\Exception\InvalidMessageTypeException;
 use Oscmarb\Ddd\Domain\Message\Message;
 use Oscmarb\Ddd\Domain\Model\ValueObject\Uuid;
+use Oscmarb\Ddd\Domain\Query\Query;
 use Oscmarb\Ddd\Domain\Query\QueryRegistry;
+use Oscmarb\Ddd\Domain\Query\Response\QueryResponse;
 use Oscmarb\Ddd\Domain\Query\Response\QueryResponseRegistry;
 use Oscmarb\Ddd\Domain\Service\Date\Clock;
 
@@ -52,5 +56,37 @@ final class MessageSerializer
             $id ?? Uuid::rawUuid(),
             $occurredOn ?? Clock::formattedNow()
         );
+    }
+
+    public function deserializeDomainEvent(string $id, string $occurredOn, array $payload, string $name): DomainEvent
+    {
+        /** @var $messageClass DomainEvent */
+        $messageClass = $this->domainEventRegistry->domainEventClassByName($name);
+
+        return $messageClass::fromPrimitives($payload, $id, $occurredOn);
+    }
+
+    public function deserializeCommand(string $id, string $occurredOn, array $payload, string $name): Command
+    {
+        /** @var $messageClass Command */
+        $messageClass = $this->commandRegistry->commandClassByName($name);
+
+        return $messageClass::fromPrimitives($payload, $id, $occurredOn);
+    }
+
+    public function deserializeQuery(string $id, string $occurredOn, array $payload, string $name): Query
+    {
+        /** @var $messageClass Query */
+        $messageClass = $this->queryRegistry->queryClassByName($name);
+
+        return $messageClass::fromPrimitives($payload, $id, $occurredOn);
+    }
+
+    public function deserializeQueryResponse(string $id, string $occurredOn, array $payload, string $name): QueryResponse
+    {
+        /** @var $messageClass QueryResponse */
+        $messageClass = $this->queryResponseRegistry->queryResponseClassByName($name);
+
+        return $messageClass::fromPrimitives($payload, $id, $occurredOn);
     }
 }
